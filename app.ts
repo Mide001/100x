@@ -1,4 +1,4 @@
-import express, { Request, Response} from "express";
+import express, { Request, Response } from "express";
 import { Connection, PublicKey, ParsedInstruction } from "@solana/web3.js";
 import { sendTelegramMessage, formatTime } from "./utils/utility";
 import { fetchTokenData } from "./dexscreener";
@@ -10,7 +10,7 @@ const { RAYDIUM_PUBLIC_KEY, HTTP_URL, WSS_URL } = process.env;
 
 // Check if required environment variables are provided
 if (!RAYDIUM_PUBLIC_KEY || !HTTP_URL || !WSS_URL) {
-  throw new Error('One or more environment variables are missing.');
+  throw new Error("One or more environment variables are missing.");
 }
 
 // Create PublicKey instance for RAYDIUM_PUBLIC_KEY
@@ -104,18 +104,21 @@ async function fetchRaydiumMints(txId: string, connection: Connection) {
 
     let combinedMessage = "";
 
-
     console.log("New Pool Found!");
     console.log("Pool Count: ", poolCount);
 
     // Wait for 30 seconds before calling fetchTokenData
     await new Promise((resolve) => setTimeout(resolve, 30000));
 
-    // Fetch token data using the contract address
     const tokenDataUrl = `https://api.dexscreener.com/latest/dex/tokens/${contactAddress}`;
     const tokenData = await fetchTokenData(tokenDataUrl);
 
-    tokenData.forEach(token => {
+    if (!tokenData || tokenData.length === 0) {
+      console.log("No data found in the response");
+      return;
+    }
+
+    tokenData.forEach((token) => {
       const symbol = token.baseToken.symbol;
       const liquidity = token.liquidity.usd;
       const fdv = token.fdv;
@@ -137,7 +140,6 @@ GMGNAI Link: ${GmgnLink}
 Deployed At: ${currentTime}
 `;
 
-    // Send the combined message
     await sendTelegramMessage(combinedMessage);
   } catch (err) {
     console.log("Error fetching transaction: ", txId);
@@ -150,18 +152,18 @@ startConnection(connection, RAYDIUM, INSTRUCTION_NAME).catch(console.error);
 const app = express();
 
 // Endpoint to confirm API is working
-app.get('/', (req: Request, res: Response) => {
-    res.send('API is working!');
+app.get("/", (req: Request, res: Response) => {
+  res.send("API is working!");
 });
 
 // Endpoint to trigger Solana-related logic
-app.get('/fetch-data', async (req: Request, res: Response) => {
+app.get("/fetch-data", async (req: Request, res: Response) => {
   try {
     // Your Solana-related logic here
-    res.send('Data fetched successfully!');
+    res.send("Data fetched successfully!");
   } catch (error) {
-    console.error('Error fetching data:', error);
-    res.status(500).send('Error fetching data');
+    console.error("Error fetching data:", error);
+    res.status(500).send("Error fetching data");
   }
 });
 

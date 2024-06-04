@@ -3,7 +3,6 @@ config();
 
 const { TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID } = process.env;
 
-
 export async function sendTelegramMessage(message: string): Promise<void> {
   const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
   const params = {
@@ -23,6 +22,7 @@ export async function sendTelegramMessage(message: string): Promise<void> {
     }
 
     const responseData = await response.json();
+    return responseData;
   } catch (err) {
     console.error("Error sending Telegram message:", err);
     throw err;
