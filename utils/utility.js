@@ -30,6 +30,7 @@ function sendTelegramMessage(message) {
                 throw new Error(`Telegram API responded with status ${response.status}`);
             }
             const responseData = yield response.json();
+            return responseData;
         }
         catch (err) {
             console.error("Error sending Telegram message:", err);

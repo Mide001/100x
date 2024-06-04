@@ -22,7 +22,7 @@ const dotenv_1 = require("dotenv");
 const { RAYDIUM_PUBLIC_KEY, HTTP_URL, WSS_URL } = process.env;
 // Check if required environment variables are provided
 if (!RAYDIUM_PUBLIC_KEY || !HTTP_URL || !WSS_URL) {
-    throw new Error('One or more environment variables are missing.');
+    throw new Error("One or more environment variables are missing.");
 }
 // Create PublicKey instance for RAYDIUM_PUBLIC_KEY
 const RAYDIUM = new web3_js_1.PublicKey(RAYDIUM_PUBLIC_KEY);
@@ -90,10 +90,13 @@ function fetchRaydiumMints(txId, connection) {
             console.log("Pool Count: ", poolCount);
             // Wait for 30 seconds before calling fetchTokenData
             yield new Promise((resolve) => setTimeout(resolve, 30000));
-            // Fetch token data using the contract address
             const tokenDataUrl = `https://api.dexscreener.com/latest/dex/tokens/${contactAddress}`;
             const tokenData = yield (0, dexscreener_1.fetchTokenData)(tokenDataUrl);
-            tokenData.forEach(token => {
+            if (!tokenData || tokenData.length === 0) {
+                console.log("No data found in the response");
+                return;
+            }
+            tokenData.forEach((token) => {
                 const symbol = token.baseToken.symbol;
                 const liquidity = token.liquidity.usd;
                 const fdv = token.fdv;
@@ -112,7 +115,6 @@ DEX Screener Link: ${dexscreenerLink}
 GMGNAI Link: ${GmgnLink}
 Deployed At: ${currentTime}
 `;
-            // Send the combined message
             yield (0, utility_1.sendTelegramMessage)(combinedMessage);
         }
         catch (err) {
@@ -124,18 +126,18 @@ Deployed At: ${currentTime}
 startConnection(connection, RAYDIUM, INSTRUCTION_NAME).catch(console.error);
 const app = (0, express_1.default)();
 // Endpoint to confirm API is working
-app.get('/', (req, res) => {
-    res.send('API is working!');
+app.get("/", (req, res) => {
+    res.send("API is working!");
 });
 // Endpoint to trigger Solana-related logic
-app.get('/fetch-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/fetch-data", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Your Solana-related logic here
-        res.send('Data fetched successfully!');
+        res.send("Data fetched successfully!");
     }
     catch (error) {
-        console.error('Error fetching data:', error);
-        res.status(500).send('Error fetching data');
+        console.error("Error fetching data:", error);
+        res.status(500).send("Error fetching data");
     }
 }));
 // Start Express server
