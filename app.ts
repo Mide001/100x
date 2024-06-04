@@ -1,3 +1,4 @@
+import express, { Request, Response} from "express";
 import { Connection, PublicKey, ParsedInstruction } from "@solana/web3.js";
 import { sendTelegramMessage, formatTime } from "./utils/utility";
 import { fetchTokenData } from "./dexscreener";
@@ -145,3 +146,27 @@ Deployed At: ${currentTime}
 }
 
 startConnection(connection, RAYDIUM, INSTRUCTION_NAME).catch(console.error);
+
+const app = express();
+
+// Endpoint to confirm API is working
+app.get('/', (req: Request, res: Response) => {
+    res.send('API is working!');
+});
+
+// Endpoint to trigger Solana-related logic
+app.get('/fetch-data', async (req: Request, res: Response) => {
+  try {
+    // Your Solana-related logic here
+    res.send('Data fetched successfully!');
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('Error fetching data');
+  }
+});
+
+// Start Express server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
+});

@@ -8,7 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
 const web3_js_1 = require("@solana/web3.js");
 const utility_1 = require("./utils/utility");
 const dexscreener_1 = require("./dexscreener");
@@ -118,3 +122,24 @@ Deployed At: ${currentTime}
     });
 }
 startConnection(connection, RAYDIUM, INSTRUCTION_NAME).catch(console.error);
+const app = (0, express_1.default)();
+// Endpoint to confirm API is working
+app.get('/', (req, res) => {
+    res.send('API is working!');
+});
+// Endpoint to trigger Solana-related logic
+app.get('/fetch-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Your Solana-related logic here
+        res.send('Data fetched successfully!');
+    }
+    catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).send('Error fetching data');
+    }
+}));
+// Start Express server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
+});
