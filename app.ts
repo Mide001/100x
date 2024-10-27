@@ -103,12 +103,12 @@ async function fetchRaydiumMints(txId: string, connection: Connection) {
     const currentTime = formatTime(new Date());
 
     let combinedMessage = "";
-
+ 
     console.log("New Pool Found!");
     console.log("Pool Count: ", poolCount);
 
     // Wait for 30 seconds before calling fetchTokenData
-    await new Promise((resolve) => setTimeout(resolve, 30000));
+    await new Promise((resolve) => setTimeout(resolve, 40000));
 
     const tokenDataUrl = `https://api.dexscreener.com/latest/dex/tokens/${contactAddress}`;
     const tokenData = await fetchTokenData(tokenDataUrl);
